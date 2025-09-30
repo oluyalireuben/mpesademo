@@ -1,0 +1,68 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#121212"
+    tools:context=".MpesaMessagesActivity">
+
+    <!-- Toolbar / Top bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#212121"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:elevation="4dp">
+
+        <!-- Back Arrow -->
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_arrow_back"
+            android:tint="@android:color/white"
+            android:contentDescription="Back"
+            tools:ignore="UseAppTint" />
+
+        <!-- Yellow Circular Icon -->
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="12dp"
+            android:src="@drawable/ic_person_white"
+            android:background="@drawable/circle_bg"
+            android:padding="6dp"
+            android:scaleType="centerInside"
+            android:contentDescription="User Icon" />
+
+        <!-- Title -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="MPESA"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1" />
+
+        <!-- 3 Dots Menu -->
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_more_vert_white"
+            android:contentDescription="Menu" />
+    </LinearLayout>
+
+    <!-- Messages List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_messages"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        android:clipToPadding="false" />
+
+</LinearLayout>

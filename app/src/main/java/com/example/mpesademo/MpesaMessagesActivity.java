@@ -31,8 +31,9 @@ public class MpesaMessagesActivity extends AppCompatActivity {
         btnBack.setOnClickListener(v -> finish());
 
         List<Message> messages = dbHelper.getAllMessages();
-        adapter = new MessageAdapter(messages);
+        adapter = new MessageAdapter(this, messages, recyclerView); // pass context + recyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+
     }
 }

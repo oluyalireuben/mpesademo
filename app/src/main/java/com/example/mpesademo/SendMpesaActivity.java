@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mpesademo.db.DBHelper;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -41,15 +42,30 @@ public class SendMpesaActivity extends AppCompatActivity {
     }
 
     private void processTransaction(boolean includePhone) {
-        String name = edtName.getText().toString();
-        String phone = edtPhone.getText().toString();
-        double amount = Double.parseDouble(edtAmount.getText().toString());
+        String name = edtName.getText().toString().trim();
+        String phone = edtPhone.getText().toString().trim();
+        String amountStr = edtAmount.getText().toString().trim();
+
+        if (name.isEmpty() || amountStr.isEmpty() || (includePhone && phone.isEmpty())) {
+            edtAmount.setError("Please fill all required fields");
+            return;
+        }
+
+        double amount = Double.parseDouble(amountStr);
 
         // Deduct from balance
         balance -= amount;
         if (balance < 0) balance = 50000.00;
 
-        // Generate transaction code (yearly format)
+        // Format money values with commas
+        NumberFormat nf = NumberFormat.getInstance(Locale.US);
+        nf.setMinimumFractionDigits(2);
+        nf.setMaximumFractionDigits(2);
+
+        String amountFormatted = nf.format(amount);
+        String balanceFormatted = nf.format(balance);
+
+        // Generate transaction code (always uppercase)
         String code = generateCode();
 
         // Date & time
@@ -59,14 +75,14 @@ public class SendMpesaActivity extends AppCompatActivity {
         String message;
         if (includePhone) {
             // Send Money message
-            message = code + " Confirmed. Ksh" + amount + " sent to " + name + " " + phone
-                    + " on " + time + ". New M-PESA balance is Ksh" + String.format("%.2f", balance)
+            message = code + " Confirmed. Ksh" + amountFormatted + " sent to " + name + " " + phone
+                    + " on " + time + ". New M-PESA balance is Ksh" + balanceFormatted
                     + ". Transaction cost, Ksh0.00. Amount you can transact within the day is 499,950.00. "
                     + "Sign up for Lipa Na M-PESA Till online https://m-pesaforbusiness.co.ke";
         } else {
             // Pochi la Biashara message (no phone)
-            message = code + " Confirmed. Ksh" + amount + " sent to " + name
-                    + " on " + time + ". New M-PESA balance is Ksh" + String.format("%.2f", balance)
+            message = code + " Confirmed. Ksh" + amountFormatted + " sent to " + name
+                    + " on " + time + ". New M-PESA balance is Ksh" + balanceFormatted
                     + ". Transaction cost, Ksh0.00. Amount you can transact within the day is 499,950.00. "
                     + "Sign up for Lipa Na M-PESA Till online https://m-pesaforbusiness.co.ke";
         }
@@ -80,17 +96,18 @@ public class SendMpesaActivity extends AppCompatActivity {
 
     /**
      * Generate yearly M-PESA transaction code
-     * Example (2025): TIUDU627t7
+     * Example (2025): TIUDU627T7
+     * Always 10 characters, uppercase letters + numbers
      */
     private String generateCode() {
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz";
-        StringBuilder sb = new StringBuilder("T"); // always start with T
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder sb = new StringBuilder("T"); // start with T
         Random r = new Random();
 
-        for (int i = 0; i < 9; i++) { // 9 more characters to make 10 total
+        for (int i = 0; i < 9; i++) {
             sb.append(chars.charAt(r.nextInt(chars.length())));
         }
 
-        return sb.toString();
+        return sb.toString().toUpperCase(Locale.ROOT);
     }
 }

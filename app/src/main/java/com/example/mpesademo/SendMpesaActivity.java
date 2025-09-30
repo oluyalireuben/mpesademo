@@ -26,23 +26,27 @@ public class SendMpesaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_send_mpesa);
 
         edtName = findViewById(R.id.edt_name);
-        edtPhone = findViewById(R.id.edt_phone);
+        edtPhone = findViewById(R.id.edt_phone); // still captured but won’t be shown in message
         edtAmount = findViewById(R.id.edt_amount);
         btnSubmit = findViewById(R.id.btn_submit);
         dbHelper = new DBHelper(this);
 
         btnSubmit.setOnClickListener(v -> {
             String name = edtName.getText().toString();
-            String phone = edtPhone.getText().toString();
             double amount = Double.parseDouble(edtAmount.getText().toString());
 
+            // Deduct from balance
             balance -= amount;
-            if (balance < 0) balance = 50000.00;
+            if (balance < 0) balance = 50000.00; // reset if negative
 
+            // Generate transaction code (yearly format)
             String code = generateCode();
+
+            // Date & time
             String time = new SimpleDateFormat("d/M/yyyy 'at' h:mm a", Locale.getDefault()).format(new Date());
 
-            String message = code + " Confirmed. Ksh" + amount + " sent to " + name + " " + phone
+            // Final message (no phone number, only name)
+            String message = code + " Confirmed. Ksh" + amount + " sent to " + name
                     + " on " + time + ". New M-PESA balance is Ksh" + String.format("%.2f", balance)
                     + ". Transaction cost, Ksh0.00. Amount you can transact within the day is 499,950.00. "
                     + "Sign up for Lipa Na M-PESA Till online https://m-pesaforbusiness.co.ke";
@@ -54,13 +58,20 @@ public class SendMpesaActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Generate yearly M-PESA transaction code
+     * Example (2025): TIUDU627t7
+     * Always starts with "T" + 9 random alphanumeric chars
+     */
     private String generateCode() {
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        StringBuilder sb = new StringBuilder();
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz";
+        StringBuilder sb = new StringBuilder("T"); // always start with T
         Random r = new Random();
-        for (int i = 0; i < 10; i++) {
+
+        for (int i = 0; i < 9; i++) { // 9 more characters to make 10 total
             sb.append(chars.charAt(r.nextInt(chars.length())));
         }
+
         return sb.toString();
     }
 }

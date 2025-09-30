@@ -23,10 +23,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <!-- Send Money option -->
     <Button
-        android:id="@+id/btn_submit"
-        android:text="Send"
+        android:id="@+id/btn_send_money"
+        android:text="Send Money"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"/>
+
+    <!-- Pochi la Biashara option -->
+    <Button
+        android:id="@+id/btn_pochi"
+        android:text="Pochi la Biashara"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"/>
+
 </LinearLayout>
